@@ -19,7 +19,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
     }
 
     double max = 0.0;
-
+    #pragma omp parallel for
     for(int i = 0; i < m_object->m_nVertices; i++) {
         vector<Vertex*> _neighborhood;
         m_object->m_vertices[i].ring(k, _neighborhood, m_object->m_vertices);

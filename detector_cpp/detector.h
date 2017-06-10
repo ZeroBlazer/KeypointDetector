@@ -8,6 +8,8 @@
 
 #include <matio.h>
 
+#include <omp.h>
+
 #include <cstring>
 #include <algorithm>
 

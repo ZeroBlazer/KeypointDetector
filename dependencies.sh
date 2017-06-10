@@ -1,0 +1,1 @@
+sudo apt-get install libgom-1.0-dev

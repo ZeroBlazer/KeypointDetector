@@ -1,7 +1,6 @@
 CC = g++
-CFLAGS = -Wall #/usr/include/gsl# -std=c++11 
-#LIBS = -lGL -lGLU -lglut -L/usr/lib64 -lstdc++ -lgsl -lgslcblas -lm -lmatio
-LIBS = -L/usr/lib64 -lstdc++ -lgsl -lgslcblas -lm -lmatio
+CFLAGS = -Wall
+LIBS = -L/usr/lib64 -lstdc++ -lgsl -lgslcblas -lm -lmatio -fopenmp
 
 EXECS = kp-detector
 OBJS = main.o detector.o mesh.o

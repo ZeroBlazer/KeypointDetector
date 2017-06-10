@@ -72,6 +72,7 @@ void Vertex::ring(int k, vector<Vertex *> &_neighborhood, Vertex *vertices)
         }
     }
 
+    #pragma omp parallel for
     for(vector<Vertex*>::iterator it = _marked.begin();
         it < _marked.end(); it++) {
         (*it)->isMarked = false;
