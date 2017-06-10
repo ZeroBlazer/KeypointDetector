@@ -22,10 +22,10 @@ main.o: main.cpp
 	${CC} ${CFLAGS} -c main.cpp ${LIBS}
 
 detector.o: detector.cpp detector.h mesh.o
-	${CC} ${CFLAGS} -c detector.cpp
+	${CC} ${CFLAGS} -c detector.cpp ${LIBS}
 
 mesh.o: mesh.cpp mesh.h
-	${CC} ${CFLAGS} -c mesh.cpp
+	${CC} ${CFLAGS} -c mesh.cpp ${LIBS}
 
 clean:
 	rm -f ${EXECS} ${OBJS}
