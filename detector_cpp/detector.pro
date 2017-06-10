@@ -13,12 +13,12 @@ TEMPLATE = app
 
 
 SOURCES +=  main.cpp\
+            detector.cpp \
             pclviewer.cpp \
-            harrisdetector.cpp \
             mesh.cpp
 
 HEADERS  += pclviewer.h \
-    harrisdetector.h \
-    mesh.h
+            detector.h \
+            mesh.h
 
 FORMS += pclviewer.ui

@@ -1,17 +1,17 @@
-#include "harrisdetector.h"
+#include "detector.h"
 
-HarrisDetector::HarrisDetector(Mesh *_mesh) :
+Detector::Detector(Mesh *_mesh) :
     m_object(_mesh)
 {}
 
-void HarrisDetector::setMesh(Mesh *_mesh)
+void Detector::setMesh(Mesh *_mesh)
 {
     m_object = _mesh;
 }
 
-void HarrisDetector::interestPoints(vector<Vertex>& interestPoints, int k)
+void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
 {
-    cout << "\nfn: Harris 3D with k: " << k << "." << endl;
+    cout << "\nfn: 3D KP-Detector with k: " << k << "." << endl;
 
     if(!m_object) {
         cout << "m_object sin contenido" << endl;
@@ -184,7 +184,7 @@ void HarrisDetector::interestPoints(vector<Vertex>& interestPoints, int k)
         //double k = 0.04;
         double resp = fx2*fy2 - fxfy*fxfy - k*(fx2 + fy2)*(fx2 + fy2);
 
-        m_object->m_vertices[i].harrisResponse = resp;
+        m_object->m_vertices[i].response = resp;
 
         if(resp > max)
             max = resp;
@@ -223,5 +223,5 @@ void HarrisDetector::interestPoints(vector<Vertex>& interestPoints, int k)
         interestPoints.push_back(candidatePoints[i]);
     }
 
-    cout << "End of Harris Interest 3D Points :)" << endl;
+    cout << "3D Keypoints Points were successfully detected :)" << endl;
 }

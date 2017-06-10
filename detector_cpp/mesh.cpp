@@ -20,7 +20,7 @@ Vertex::Vertex(Point_3D _pos, indx _index, bool _isInterestPoint)
     index = _index;
     depth = 0;
     isInterestPoint = _isInterestPoint;
-    harrisResponse = 0.0;
+    response = 0.0;
 }
 
 // Vertex& Vertex::operator=(Vertex& _vertex)
@@ -28,7 +28,7 @@ Vertex::Vertex(Point_3D _pos, indx _index, bool _isInterestPoint)
 //     m_pos = _vertex.m_pos;
 //     index = _vertex.index;
 //     depth = _vertex.depth;
-//     harrisResponse = _vertex.harrisResponse;
+//     response = _vertex.response;
 //     isMarked = _vertex.isMarked;
 //     isInterestPoint = _vertex.isInterestPoint;
 //     m_faces = _vertex.m_faces;
@@ -86,7 +86,7 @@ void Vertex::defineInterest(Vertex *_vertices)
     Vertex* _tmp;
     for(; it != it2; it++) {
         _tmp = &_vertices[*it];
-        if(_tmp != this && harrisResponse < _tmp->harrisResponse)
+        if(_tmp != this && response < _tmp->response)
             return;
     }
     isInterestPoint = true;
@@ -130,7 +130,7 @@ void Mesh::reset()
 
 void Mesh::loadOffFile(string filename)
 {
-    cout << "\nWill load " << filename << " now!_______________" << endl;
+    cout << "\nWill load " << filename << " now!" << endl;
 
     ifstream _file;
     _file.open(filename.c_str()/*, ios::in*/);
@@ -196,7 +196,7 @@ void Mesh::loadOffFile(string filename)
         m_vertices[_indx3].addVertex(_indx2);
     }
 
-    cout << filename << " was loaded correctly_________" << endl;
+    cout << filename << " was loaded succesfully..." << endl;
 }
 
 void Mesh::loadMatFile(string filename)

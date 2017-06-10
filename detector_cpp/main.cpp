@@ -1,20 +1,28 @@
-#include "harrisdetector.h"
+#include "detector.h"
 #include <iostream>
 
 using namespace std;
 
 int main(int argc, char** argv)
 {
-    if(argc < 2) {
-        cout << "Ingresar nombre de archivo" << endl;
+    if(argc != 3) {
+        cout << "Uso: <ext> <filename>" << endl;
         return 0;
     }
+    
     Mesh mesh;
-//    mesh.loadOffFile(argv[1]);
-    mesh.loadMatFile(argv[1]);
-    HarrisDetector HD(&mesh);
+    if(strcmp(argv[1], "off") == 0) {
+        mesh.loadOffFile(argv[2]);
+    } else if (strcmp(argv[1], "mat") == 0) {
+        mesh.loadMatFile(argv[2]);
+    } else {
+        cout << "Not a valid file" << endl;
+        return 0;
+    }
+    
+    Detector KPD(&mesh);
     vector<Vertex> interestPoints;
-    HD.interestPoints(interestPoints, 7);
+    KPD.interestPoints(interestPoints, 7);
 
     return 0;
 }

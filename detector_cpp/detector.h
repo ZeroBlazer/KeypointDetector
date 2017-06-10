@@ -1,5 +1,5 @@
-#ifndef HARRISDETECTOR_H
-#define HARRISDETECTOR_H
+#ifndef DETECTOR_H
+#define DETECTOR_H
 
 #include <gsl/gsl_linalg.h>
 #include <gsl/gsl_blas.h>
@@ -15,9 +15,9 @@
 
 using namespace std;
 
-class HarrisDetector {
+class Detector {
 public:
-    HarrisDetector(Mesh *_mesh = 0);  //Inicializar en NULL
+    Detector(Mesh *_mesh = 0);  //Inicializar en NULL
 
     void interestPoints(vector<Vertex> &interestPoints, int k = 2);
 
@@ -28,4 +28,4 @@ private:
 
 };
 
-#endif // HARRISDETECTOR_H
+#endif // DETECTOR_H

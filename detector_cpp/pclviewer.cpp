@@ -225,7 +225,7 @@ void PCLViewer::Harris3D()
 
     cout << "Interest Points: --------------------------------->" << endl;
     for(; it != it2; it++) {
-        cout << "Key " << it->m_pos << "\tIndex: " << it->index << "\tResponse: " << it->harrisResponse << endl;
+        cout << "Key " << it->m_pos << "\tIndex: " << it->index << "\tResponse: " << it->response << endl;
         cloud->points[it->index].r = 255;
         cloud->points[it->index].g = 0;
         cloud->points[it->index].b = 10;

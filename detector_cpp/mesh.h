@@ -30,7 +30,7 @@ struct Face;
 struct Vertex {
     typedef size_t indx;
 
-    Vertex() {  index = 0;  depth = 0;  isInterestPoint = false;    harrisResponse = 0.0;   }
+    Vertex() {  index = 0;  depth = 0;  isInterestPoint = false;    response = 0.0;   }
 
     Vertex(Point_3D _pos, indx _index = 0, bool _isInterestPoint = false);
 
@@ -53,7 +53,7 @@ struct Vertex {
 
     indx depth;
 
-    double harrisResponse;
+    double response;
 
     bool isMarked;
 
@@ -64,7 +64,7 @@ struct Vertex {
     set<indx> m_adjacentVertices;
 };
 
-inline bool comp(Vertex &i, Vertex &j){	return i.harrisResponse < j.harrisResponse; }
+inline bool comp(Vertex &i, Vertex &j){	return i.response < j.response; }
 
 struct Face {
     Face() {}
