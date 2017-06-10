@@ -8,14 +8,12 @@ Point_3D &Point_3D::operator=(Point_3D &_other)
     return *this;
 }
 
-ostream &operator<<(ostream &os, Point_3D &_other)
-{
+ostream &operator<<(ostream &os, Point_3D &_other) {
     os << "Point at (" << _other.x << ", " << _other.y << ", " << _other.z << ")";
     return os;
 }
 
-Vertex::Vertex(Point_3D _pos, indx _index, bool _isInterestPoint)
-{
+Vertex::Vertex(Point_3D _pos, indx _index, bool _isInterestPoint) {
     m_pos = _pos;
     index = _index;
     depth = 0;
@@ -36,8 +34,7 @@ Vertex::Vertex(Point_3D _pos, indx _index, bool _isInterestPoint)
 //     return *this;
 // }
 
-void Vertex::ring(int k, vector<Vertex *> &_neighborhood, Vertex *vertices)
-{
+void Vertex::ring(int k, vector<Vertex *> &_neighborhood, Vertex *vertices) {
     int _depth = depth = 0;
 
     queue<Vertex*> _queue;
@@ -80,8 +77,7 @@ void Vertex::ring(int k, vector<Vertex *> &_neighborhood, Vertex *vertices)
     }
 }
 
-void Vertex::defineInterest(Vertex *_vertices)
-{
+void Vertex::defineInterest(Vertex *_vertices) {
     set<indx>::iterator it = m_adjacentVertices.begin(),
                         it2 = m_adjacentVertices.end();
     Vertex* _tmp;
@@ -93,19 +89,16 @@ void Vertex::defineInterest(Vertex *_vertices)
     isInterestPoint = true;
 }
 
-ostream &operator<<(ostream &os, Vertex &_vertex)
-{
+ostream &operator<<(ostream &os, Vertex &_vertex) {
     os << "Vertex #" << _vertex.index << " @ " << _vertex.m_pos << "\tIs Interest?: " << _vertex.isInterestPoint;
     return os;
 }
 
-void Face::add(Vertex::indx _index)
-{
+void Face::add(Vertex::indx _index) {
     m_vertices.push_back(_index);
 }
 
-vector<Vertex::indx> &Face::getVertices()
-{
+vector<Vertex::indx> &Face::getVertices() {
     return m_vertices;
 }
 

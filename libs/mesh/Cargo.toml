@@ -1,7 +1,9 @@
 [package]
-name = "project_thesis"
+name = "mesh"
 version = "0.1.0"
 authors = ["Elías Puma <elpumitaelias@gmail.com>"]
 
 [dependencies]
-mesh = { path = "./libs/mesh/" }
+serde = "1"
+serde_derive = "1"
+csv = "1.0.0-beta.3"
