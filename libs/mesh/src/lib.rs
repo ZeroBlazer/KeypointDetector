@@ -12,8 +12,6 @@ struct Point3D {
     z: f64,
 }
 
-// type Point3D = (f64, f64, f64);
-
 #[derive(Debug)]
 struct Face {
     vertices: (usize, usize, usize),
