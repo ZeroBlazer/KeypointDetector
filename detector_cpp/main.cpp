@@ -1,5 +1,6 @@
 #include "detector.h"
 #include <iostream>
+#include <stdio.h>
 
 using namespace std;
 
@@ -22,7 +23,10 @@ int main(int argc, char** argv)
     
     Detector KPD(&mesh);
     vector<Vertex> interestPoints;
+    // double start = omp_get_wtime();
     KPD.interestPoints(interestPoints, 7);
+    // double end = omp_get_wtime();
+    // printf("start = %.16g\nend = %.16g\ndiff = %.16g\n", start, end, end - start); 
 
     return 0;
 }

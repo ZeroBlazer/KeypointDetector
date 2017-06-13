@@ -23,7 +23,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
     int i;
     Mesh* _object = m_object;
     // for(int i = 0; i < m_object->m_nVertices; i++) {
-    #pragma omp parallel for ordered schedule(dynamic) private(i) shared(_object, max)
+    // #pragma omp parallel for ordered schedule(dynamic) private(i) shared(_object, max)
     for(i = 0; i < limit; i++) {
         vector<Vertex*> _neighborhood;
         _object->m_vertices[i].ring(k, _neighborhood, _object->m_vertices);
@@ -44,7 +44,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         zc /= _neighborhood.size();
 
         //Translate the vertex, in order the centroid to be in [0 0 0]
-        // #pragma omp for 
+        #pragma omp for 
         for(/*register */uint j = 0; j < _neighborhood.size();j++) {
             _neighborhood[j]->m_pos.x -= xc;
             _neighborhood[j]->m_pos.y -= yc;
@@ -57,7 +57,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double A[9];
         memset(A, 0, sizeof(double)*9);
 
-        // #pragma omp for
+        #pragma omp for
         for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
@@ -69,7 +69,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
         A[3] = A[1];	A[6] = A[2];	A[7] = A[5];
         
-        // #pragma omp for
+        #pragma omp for
         for(int j = 0; j < 9; j++) {
             A[j] /= (_neighborhood.size()-1);
         }
@@ -87,15 +87,15 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         gsl_eigen_symmv_sort(eval, evec, GSL_EIGEN_SORT_VAL_DESC);
 
         //Sacamos las componentes del nuevo sistema de coordenadas
-        double x_1 = gsl_matrix_get(evec, 0, 0);	double x_2 = gsl_matrix_get(evec, 1, 0); double x_3 = gsl_matrix_get(evec, 2, 0);
-        double y_1 = gsl_matrix_get(evec, 0, 1);	double y_2 = gsl_matrix_get(evec, 1, 1); double y_3 = gsl_matrix_get(evec, 2, 1);
-        double z_1 = gsl_matrix_get(evec, 0, 2);	double z_2 = gsl_matrix_get(evec, 1, 2); double z_3 = gsl_matrix_get(evec, 2, 2);
+        double x_1 = gsl_matrix_get(evec, 0, 0);	double x_2 = gsl_matrix_get(evec, 1, 0);    double x_3 = gsl_matrix_get(evec, 2, 0);
+        double y_1 = gsl_matrix_get(evec, 0, 1);	double y_2 = gsl_matrix_get(evec, 1, 1);    double y_3 = gsl_matrix_get(evec, 2, 1);
+        double z_1 = gsl_matrix_get(evec, 0, 2);	double z_2 = gsl_matrix_get(evec, 1, 2);    double z_3 = gsl_matrix_get(evec, 2, 2);
 
         double x2 = _neighborhood[0]->m_pos.x - xc;
         double y2 = _neighborhood[0]->m_pos.y - yc;
         double z2 = _neighborhood[0]->m_pos.z - zc;
 
-        if((z_1*x2 + z_2*y2 + z_3*z2) < 0){
+        if((z_1*x2 + z_2*y2 + z_3*z2) < 0) {
             z_1 = -z_1;
             z_2 = -z_2;
             z_3 = -z_3;
@@ -113,7 +113,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
 
         //Realizamos la rotacion, con el nuevo sistema de coordenadas
-        // #pragma omp for
+        #pragma omp for
         for(/*register */uint j = 0; j < _neighborhood.size(); j++){
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
@@ -128,7 +128,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double x = _neighborhood[0]->m_pos.x;
         double y = _neighborhood[0]->m_pos.y;
 
-        // #pragma omp for
+        #pragma omp for
         for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
             _neighborhood[j]->m_pos.x = _neighborhood[j]->m_pos.x - x;
             _neighborhood[j]->m_pos.y = _neighborhood[j]->m_pos.y - y;
@@ -141,8 +141,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         memset(C, 0, sizeof(double)*36);
         memset(D, 0, sizeof(double)*6);
 
-        // #pragma omp parallel for
-        for(register uint j = 0; j < _neighborhood.size(); j++){
+        #pragma omp parallel for
+        for(/*register */uint j = 0; j < _neighborhood.size(); j++){
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
             double z = _neighborhood[j]->m_pos.z;
@@ -152,12 +152,12 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
             double x3 = x2*x;
             double y3 = y2*y;
 
-            C[0] += x*x3;	C[1] += x3*y;	C[2] += x2*y2;	C[3] += x3;		C[4] += x2*y;	C[5] += x2;
-                            C[7] += x2*y2;	C[8] += x*y3;	C[9] += x2*y;	C[10] += x*y2;	C[11] += x*y;
-                                            C[14] += y*y3;	C[15] += x*y2;	C[16] += y3;	C[17] += y2;
-                                                            C[21] += x2;	C[22] += x*y;	C[23] += x;
-                                                                            C[28] += y2;	C[29] += y;
-            D[0] += z*x2;	D[1] += z*x*y;	D[2] += z*y2;	D[3] += z*x;	D[4] += z*y;	D[5] += z;
+            C[0] += x*x3;	C[1] +=  x3*y;	C[2]  += x2*y2;	    C[3]  +=   x3;	C[4]  += x2*y;	C[5]  +=  x2;
+                            C[7] += x2*y2;	C[8]  +=  x*y3;	    C[9]  += x2*y;	C[10] += x*y2;	C[11] += x*y;
+                                            C[14] +=  y*y3;	    C[15] += x*y2;	C[16] +=   y3;	C[17] +=  y2;
+                                                                C[21] +=   x2;	C[22] +=  x*y;	C[23] +=   x;
+                                                                                C[28] +=   y2;	C[29] +=   y;
+            D[0] += z*x2;	D[1] += z*x*y;	D[2]  +=  z*y2;	    D[3]  +=  z*x;	D[4]  +=  z*y;  D[5]  +=   z;
         }
 
         C[6] = C[1];
@@ -179,7 +179,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         gsl_linalg_LU_decomp(&m1.matrix, p11, &s1);
         gsl_linalg_LU_solve(&m1.matrix, p11, &b1.vector, x1);
 
-        //Solution of quadratic surface
+        //solution of quadratic surface
         double c20_2 = gsl_vector_get(x1, 0);
         double c11 = gsl_vector_get(x1, 1);
         double c02_2 = gsl_vector_get(x1, 2);
@@ -190,9 +190,9 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double c20 = c20_2*2;
         double c02 = c02_2*2;
 
-        double fx2 = c10*c10 + 2*c20*c20 + 2*c11*c11; //A
-        double fy2 = c10*c10 + 2*c11*c11 + 2*c02*c02; //B
-        double fxfy = c10*c01 + 2*c20*c11 + 2*c11*c02; //C
+        double fx2 = c10*c10 + 2*c20*c20 + 2*c11*c11;   //A
+        double fy2 = c10*c10 + 2*c11*c11 + 2*c02*c02;   //B
+        double fxfy = c10*c01 + 2*c20*c11 + 2*c11*c02;  //C
 
         //double k = 0.04;
         double resp = fx2*fy2 - fxfy*fxfy - k*(fx2 + fy2)*(fx2 + fy2);
@@ -232,9 +232,9 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
 
     //int numPoints = candidatePoints.size();
     for(register int i = 0; i < numPoints; i++) {
-        cout << "It" << i << endl;  //524
+        cout << "It" << i << ", ";  //524
         interestPoints.push_back(candidatePoints[i]);
     }
 
-    cout << "3D Keypoints Points were successfully detected :)" << endl;
+    cout << "\n3D Keypoints Points were successfully detected :)" << endl;
 }
