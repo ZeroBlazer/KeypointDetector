@@ -19,10 +19,14 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
     }
 
     double max = 0.0;
-    // #pragma omp parallel for
-    for(int i = 0; i < m_object->m_nVertices; i++) {
+    int limit = m_object->m_nVertices;
+    int i;
+    Mesh* _object = m_object;
+    // for(int i = 0; i < m_object->m_nVertices; i++) {
+    #pragma omp parallel for ordered schedule(dynamic) private(i) shared(_object, max)
+    for(i = 0; i < limit; i++) {
         vector<Vertex*> _neighborhood;
-        m_object->m_vertices[i].ring(k, _neighborhood, m_object->m_vertices);
+        _object->m_vertices[i].ring(k, _neighborhood, _object->m_vertices);
 
         //Process "_neighborhood", first, calculate the centroid
         double xc = 0, yc = 0, zc = 0;
@@ -40,7 +44,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         zc /= _neighborhood.size();
 
         //Translate the vertex, in order the centroid to be in [0 0 0]
-        #pragma omp parallel for
+        // #pragma omp for 
         for(/*register */uint j = 0; j < _neighborhood.size();j++) {
             _neighborhood[j]->m_pos.x -= xc;
             _neighborhood[j]->m_pos.y -= yc;
@@ -53,7 +57,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double A[9];
         memset(A, 0, sizeof(double)*9);
 
-        #pragma omp parallel for
+        // #pragma omp for
         for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
@@ -65,7 +69,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
         A[3] = A[1];	A[6] = A[2];	A[7] = A[5];
         
-        #pragma omp parallel for
+        // #pragma omp for
         for(int j = 0; j < 9; j++) {
             A[j] /= (_neighborhood.size()-1);
         }
@@ -109,7 +113,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
 
         //Realizamos la rotacion, con el nuevo sistema de coordenadas
-        #pragma omp parallel for
+        // #pragma omp for
         for(/*register */uint j = 0; j < _neighborhood.size(); j++){
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
@@ -124,8 +128,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double x = _neighborhood[0]->m_pos.x;
         double y = _neighborhood[0]->m_pos.y;
 
-        #pragma omp parallel for
-        for(/*register */uint j = 0; j < _neighborhood.size(); j++){
+        // #pragma omp for
+        for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
             _neighborhood[j]->m_pos.x = _neighborhood[j]->m_pos.x - x;
             _neighborhood[j]->m_pos.y = _neighborhood[j]->m_pos.y - y;
         }
@@ -175,7 +179,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         gsl_linalg_LU_decomp(&m1.matrix, p11, &s1);
         gsl_linalg_LU_solve(&m1.matrix, p11, &b1.vector, x1);
 
-        //Extract solution of quadratic surface
+        //Solution of quadratic surface
         double c20_2 = gsl_vector_get(x1, 0);
         double c11 = gsl_vector_get(x1, 1);
         double c02_2 = gsl_vector_get(x1, 2);
@@ -193,7 +197,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         //double k = 0.04;
         double resp = fx2*fy2 - fxfy*fxfy - k*(fx2 + fy2)*(fx2 + fy2);
 
-        m_object->m_vertices[i].response = resp;
+        _object->m_vertices[i].response = resp;
 
         if(resp > max)
             max = resp;
@@ -211,10 +215,10 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
     vector<Vertex> candidatePoints;
 
     //Search for local maximum
-    for(register int i = 0; i< m_object->m_nVertices; i++){
-        m_object->m_vertices[i].defineInterest(m_object->m_vertices);
-        if(m_object->m_vertices[i].isInterestPoint){
-            candidatePoints.push_back(m_object->m_vertices[i]);
+    for(register int i = 0; i< _object->m_nVertices; i++){
+        _object->m_vertices[i].defineInterest(_object->m_vertices);
+        if(_object->m_vertices[i].isInterestPoint){
+            candidatePoints.push_back(_object->m_vertices[i]);
         }
     }
 
@@ -224,7 +228,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
 
     //Seleccionar los puntos de mayor respuesta
     int numPoints = // paramSelection * m_object->m_nNodes;
-                    0.01 * m_object->m_nVertices;
+                    0.01 * _object->m_nVertices;
 
     //int numPoints = candidatePoints.size();
     for(register int i = 0; i < numPoints; i++) {
