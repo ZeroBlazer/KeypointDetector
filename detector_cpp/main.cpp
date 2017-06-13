@@ -30,3 +30,18 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
+// 3D Keypoints Points were successfully detected :)
+
+// real    0m11.773s
+// user    0m11.672s
+// sys     0m0.094s
+
+// 3D Keypoints Points were successfully detected :)
+// start = 1794.723143
+// end = 1812.07836
+// diff = 17.35521700000004
+
+// real    0m17.943s
+// user    1m8.188s
+// sys     0m0.219s
