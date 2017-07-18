@@ -1,4 +1,5 @@
 #include "detector.h"
+#include <fstream>
 
 Detector::Detector(Mesh *_mesh) :
     m_object(_mesh)
@@ -235,6 +236,17 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         cout << "It" << i << ", ";  //524
         interestPoints.push_back(candidatePoints[i]);
     }
+
+    ofstream output;
+    output.open ("../output/keypoints.csv");
+
+    for (int i = 0; i < interestPoints.size(); i++) {
+        output  << interestPoints[i].m_pos.x << ", "
+                << interestPoints[i].m_pos.y << ", "
+                << interestPoints[i].m_pos.z << "\n";
+    }
+    
+    output.close();
 
     cout << "\n3D Keypoints Points were successfully detected :)" << endl;
 }
