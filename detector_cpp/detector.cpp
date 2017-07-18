@@ -44,8 +44,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         zc /= _neighborhood.size();
 
         //Translate the vertex, in order the centroid to be in [0 0 0]
-        #pragma omp for 
-        for(/*register */uint j = 0; j < _neighborhood.size();j++) {
+        // #pragma omp for 
+        for(register uint j = 0; j < _neighborhood.size();j++) {
             _neighborhood[j]->m_pos.x -= xc;
             _neighborhood[j]->m_pos.y -= yc;
             _neighborhood[j]->m_pos.z -= zc;
@@ -57,8 +57,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double A[9];
         memset(A, 0, sizeof(double)*9);
 
-        #pragma omp for
-        for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
+        // #pragma omp for
+        for(register uint j = 0; j < _neighborhood.size(); j++) {
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
             double z = _neighborhood[j]->m_pos.z;
@@ -69,7 +69,7 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
         A[3] = A[1];	A[6] = A[2];	A[7] = A[5];
         
-        #pragma omp for
+        // #pragma omp for
         for(int j = 0; j < 9; j++) {
             A[j] /= (_neighborhood.size()-1);
         }
@@ -113,8 +113,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         }
 
         //Realizamos la rotacion, con el nuevo sistema de coordenadas
-        #pragma omp for
-        for(/*register */uint j = 0; j < _neighborhood.size(); j++){
+        // #pragma omp for
+        for(register uint j = 0; j < _neighborhood.size(); j++){
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
             double z = _neighborhood[j]->m_pos.z;
@@ -128,8 +128,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         double x = _neighborhood[0]->m_pos.x;
         double y = _neighborhood[0]->m_pos.y;
 
-        #pragma omp for
-        for(/*register */uint j = 0; j < _neighborhood.size(); j++) {
+        // #pragma omp for
+        for(register uint j = 0; j < _neighborhood.size(); j++) {
             _neighborhood[j]->m_pos.x = _neighborhood[j]->m_pos.x - x;
             _neighborhood[j]->m_pos.y = _neighborhood[j]->m_pos.y - y;
         }
@@ -141,8 +141,8 @@ void Detector::interestPoints(vector<Vertex>& interestPoints, int k)
         memset(C, 0, sizeof(double)*36);
         memset(D, 0, sizeof(double)*6);
 
-        #pragma omp parallel for
-        for(/*register */uint j = 0; j < _neighborhood.size(); j++){
+        // #pragma omp parallel for
+        for(register uint j = 0; j < _neighborhood.size(); j++){
             double x = _neighborhood[j]->m_pos.x;
             double y = _neighborhood[j]->m_pos.y;
             double z = _neighborhood[j]->m_pos.z;
